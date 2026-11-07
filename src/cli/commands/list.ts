@@ -40,7 +40,6 @@ export const listCommand = new Command("list")
 
                 console.log(table.toString())
             } catch (error) {
-                chalk.red("Failed to retrieve processes"),
-                error
+                console.error(chalk.red("Failed to retrieve processes"), error)
             }
         })
