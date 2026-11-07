@@ -7,7 +7,7 @@ const PROC_PATH = "/proc"
 export class ProcessService {
 
     async getAllProcesses () : Promise<ProcessInfo[]> {
-        const entries = readdir(PROC_PATH)
+        const entries = await readdir(PROC_PATH)
 
         const pids = entries
                         .filter((entry: any) => /^\d+$/.test(entry))
