@@ -25,7 +25,19 @@ export function parseProcessStat (
     // parent pid
     const ppid = Number(remainingFields[1])
 
-    if(!Number.isInteger(ppid) || !state) {
+    // utime  - stat field 14 -> remainingfield [11]
+    const utime = Number(remainingFields[11])
+
+    const stime = Number(remainingFields[12])
+
+    const rss = Number(remainingFields[21])
+
+    if(!Number.isInteger(ppid) || 
+        !state || 
+        !Number.isInteger(pid) ||
+        !Number.isInteger(utime) ||
+        !Number.isInteger(stime)
+    ) {
         return null
     }
 
@@ -33,6 +45,10 @@ export function parseProcessStat (
         pid,
         ppid,
         processName,
-        state
+        state,
+
+        utime,
+        stime,
+        rss
     }
 }

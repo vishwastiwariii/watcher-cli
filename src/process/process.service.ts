@@ -26,7 +26,7 @@ async function getProcessesFromPs (): Promise<ProcessInfo[]> {
             pid: Number(match[1]),
             ppid: Number(match[2]),
             state: match[3]!.charAt(0),
-            processName: basename(match[4]!.trim())
+            processName: basename(match[4]!.trim()),
         })
     }
 
