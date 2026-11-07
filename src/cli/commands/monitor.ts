@@ -64,7 +64,7 @@ export const monitorCommand = new Command("monitor")
             // Show the cursor again
             process.stdout.write("\x1B[?25h");
 
-            console.log(chalk.yellow("\nProcWatch stopped.\n"));
+            console.log(chalk.yellow("\nWatcher stopped.\n"));
         };
 
         process.on("SIGINT", shutdown);
@@ -112,7 +112,7 @@ export const monitorCommand = new Command("monitor")
                 console.clear();
 
                 console.log(
-                    chalk.bold.cyan("=============== PROCWATCH ===============\n")
+                    chalk.bold.cyan("=============== WATCHER ===============\n")
                 );
 
                 console.log(chalk.yellow("SYSTEM INFORMATION"));
