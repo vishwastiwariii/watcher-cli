@@ -32,6 +32,8 @@ export function parseProcessStat (
 
     const rss = Number(remainingFields[21])
 
+    const startTimeTicks = Number(remainingFields[22])
+
     if(!Number.isInteger(ppid) || 
         !state || 
         !Number.isInteger(pid) ||
@@ -49,6 +51,7 @@ export function parseProcessStat (
 
         utime,
         stime,
-        rss
+        rss,
+        startTimeTicks
     }
 }

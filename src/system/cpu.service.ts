@@ -27,10 +27,9 @@ export class CpuService {
             .slice(1)
             .map(Number)
 
-        const total = values.reduce(
-            (sum, value) => sum + value, 
-            0
-        )
+        const total = values
+            .slice(0, 8)
+            .reduce((sum, value) => sum + value, 0)
 
         const idle = values[3]! + values[4]!
 
@@ -58,6 +57,20 @@ export class CpuService {
         const usage = ((totalDifference - idleDifference) / totalDifference) * 100
 
         return usage
+    }
+
+    calculateCpuUsage(
+        previous: CpuSnapshot,
+        current: CpuSnapshot
+    ) : number {
+        const totalDifference = current.total - previous.total
+        const idleDifference = current.idle - previous.idle
+
+        if(totalDifference <= 0) {
+            return 0
+        }
+
+        return ((totalDifference - idleDifference) / totalDifference) * 100
     }
 
     async getCpuProcessSnapshot(

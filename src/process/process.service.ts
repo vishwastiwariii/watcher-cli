@@ -4,6 +4,7 @@ import { promisify } from "node:util"
 import { basename } from "node:path"
 import type { ProcessInfo } from "./types.js"
 import { parseProcessStat } from "./processParser.js"
+import { getPageSize } from "../utils/system-info.js"
 
 const PROC_PATH = "/proc"
 const execFileAsync = promisify(execFile)
@@ -17,28 +18,35 @@ function parsePsTime (value: string): number {
     return Math.round((Number(days) * 86400 + seconds) * 100)
 }
 
+// `ps -o lstart` prints e.g. "Sat Nov  8 10:00:00 2026" -> clock ticks since epoch
+function parsePsStartTime (value: string): number {
+    return Math.round(new Date(value).getTime() / 10)
+}
+
 // macOS has no /proc, so we read process info from `ps` instead
 async function getProcessesFromPs (): Promise<ProcessInfo[]> {
     const { stdout } = await execFileAsync(
         "ps",
-        ["-axo", "pid=,ppid=,state=,rss=,utime=,stime=,comm="],
+        ["-axo", "pid=,ppid=,state=,rss=,utime=,stime=,lstart=,comm="],
         { maxBuffer: 10 * 1024 * 1024 }
     )
 
+    const pageSize = await getPageSize()
     const processes: ProcessInfo[] = []
 
     for (const line of stdout.split("\n")) {
-        const match = line.match(/^\s*(\d+)\s+(\d+)\s+(\S+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(.+)$/)
+        const match = line.match(/^\s*(\d+)\s+(\d+)\s+(\S+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(\w{3}\s+\w{3}\s+\d+\s+[\d:]+\s+\d{4})\s+(.+)$/)
         if (!match) continue
 
         processes.push({
             pid: Number(match[1]),
             ppid: Number(match[2]),
             state: match[3]!.charAt(0),
-            processName: basename(match[7]!.trim()),
+            processName: basename(match[8]!.trim()),
             utime: parsePsTime(match[5]!),
             stime: parsePsTime(match[6]!),
-            rss: Math.round(Number(match[4]) / 4), // KB -> 4KB pages, like /proc
+            rss: Math.round((Number(match[4]) * 1024) / pageSize), // KB -> pages, like /proc
+            startTimeTicks: parsePsStartTime(match[7]!),
         })
     }
 

@@ -4,6 +4,7 @@ import chalk from "chalk";
 import { Command } from "commander";
 import { listCommand } from "./cli/commands/list.js";
 import { statCommand } from "./cli/commands/stats.js";
+import { monitorCommand } from "./cli/commands/monitor.js";
 
 const program = new Command()
 
@@ -24,5 +25,7 @@ program
 program.addCommand(listCommand)
 
 program.addCommand(statCommand)
+
+program.addCommand(monitorCommand)
 
 program.parseAsync(process.argv);

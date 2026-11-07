@@ -25,17 +25,17 @@ export const statCommand = new Command("stats")
 
                 console.log(chalk.green("CPU Information"))
 
-                console.log(`CPU Usage: ${cpuUsage}%`)
+                console.log(`CPU Usage: ${cpuUsage.toFixed(2)}%`)
 
                 console.log("\n" + chalk.green("Memory Information"))
 
-                console.log(`Total Memory: ${formatMemory(memoryInfo.total)}`)
-                console.log(`Used Memory: ${formatMemory(memoryInfo.used)}`)
-                console.log(`Free Memory: ${formatMemory(memoryInfo.free)}`)
-                console.log(`Available: ${formatMemory(memoryInfo.available)}`)
+                console.log(`Total Memory: ${formatMemory(memoryInfo.total * 1024)}`)
+                console.log(`Used Memory: ${formatMemory(memoryInfo.used * 1024)}`)
+                console.log(`Free Memory: ${formatMemory(memoryInfo.free * 1024)}`)
+                console.log(`Available: ${formatMemory(memoryInfo.available * 1024)}`)
 
                 console.log(
-                    `Memory Usage : ${memoryInfo.usagePercentage}%`
+                    `Memory Usage : ${memoryInfo.usagePercentage.toFixed(2)}%`
                 )
 
                 console.log(chalk.cyan("===================\n"))

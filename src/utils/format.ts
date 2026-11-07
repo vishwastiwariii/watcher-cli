@@ -1,8 +1,12 @@
-export function formatMemory(kb: number): string {
+export function formatMemory(bytes: number): string {
 
-  if (kb >= 1024 * 1024) {
-    return `${(kb / (1024 * 1024)).toFixed(2)} GB`;
+  if (bytes >= 1024 ** 3) {
+    return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
   }
 
-  return `${(kb / 1024).toFixed(2)} MB`;
+  if (bytes >= 1024 ** 2) {
+    return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
+  }
+
+  return `${(bytes / 1024).toFixed(2)} KB`;
 }

@@ -7,4 +7,6 @@ export interface ProcessInfo {
     utime: number       // time spent in user mode
     stime: number       // time spent in kernal mode
     rss: number
+
+    startTimeTicks: number
 }
