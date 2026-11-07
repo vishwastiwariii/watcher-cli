@@ -5,6 +5,7 @@ import { Command } from "commander";
 import { listCommand } from "./cli/commands/list.js";
 import { statCommand } from "./cli/commands/stats.js";
 import { monitorCommand } from "./cli/commands/monitor.js";
+import { inspectCommand } from "./cli/commands/inspect.js";
 
 const program = new Command()
 
@@ -27,5 +28,7 @@ program.addCommand(listCommand)
 program.addCommand(statCommand)
 
 program.addCommand(monitorCommand)
+
+program.addCommand(inspectCommand)
 
 program.parseAsync(process.argv);
