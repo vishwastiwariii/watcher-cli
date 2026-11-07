@@ -23,13 +23,13 @@ export const listCommand = new Command("list")
                 colWidths:[12, 12, 30, 15]
                 })
 
-                for (const process of processes) {
+                for (const proc of processes) {
                     table.push(
                         [
-                            process.pid,
-                            process.ppid,
-                            process.processName,
-                            process.state
+                            proc.pid,
+                            proc.ppid,
+                            proc.processName,
+                            proc.state
                         ]
                     )
                 }
@@ -41,5 +41,6 @@ export const listCommand = new Command("list")
                 console.log(table.toString())
             } catch (error) {
                 console.error(chalk.red("Failed to retrieve processes"), error)
+                process.exitCode = 1
             }
         })

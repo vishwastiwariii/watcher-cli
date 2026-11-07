@@ -3,6 +3,7 @@
 import chalk from "chalk";
 import { Command } from "commander";
 import { listCommand } from "./cli/commands/list.js";
+import { statCommand } from "./cli/commands/stats.js";
 
 const program = new Command()
 
@@ -21,5 +22,7 @@ program
     })
 
 program.addCommand(listCommand)
+
+program.addCommand(statCommand)
 
 program.parseAsync(process.argv);

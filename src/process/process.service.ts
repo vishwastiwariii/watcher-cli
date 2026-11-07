@@ -8,25 +8,37 @@ import { parseProcessStat } from "./processParser.js"
 const PROC_PATH = "/proc"
 const execFileAsync = promisify(execFile)
 
+// "1:02.50" / "1:02:03.10" / "1-02:03:04" -> clock ticks (100/sec, same unit as /proc)
+function parsePsTime (value: string): number {
+    const [days, rest] = value.includes("-") ? value.split("-") as [string, string] : ["0", value]
+    const parts = rest.split(":").map(Number)
+    let seconds = 0
+    for (const part of parts) seconds = seconds * 60 + (Number.isFinite(part) ? part : 0)
+    return Math.round((Number(days) * 86400 + seconds) * 100)
+}
+
 // macOS has no /proc, so we read process info from `ps` instead
 async function getProcessesFromPs (): Promise<ProcessInfo[]> {
     const { stdout } = await execFileAsync(
         "ps",
-        ["-axo", "pid=,ppid=,state=,comm="],
+        ["-axo", "pid=,ppid=,state=,rss=,utime=,stime=,comm="],
         { maxBuffer: 10 * 1024 * 1024 }
     )
 
     const processes: ProcessInfo[] = []
 
     for (const line of stdout.split("\n")) {
-        const match = line.match(/^\s*(\d+)\s+(\d+)\s+(\S+)\s+(.+)$/)
+        const match = line.match(/^\s*(\d+)\s+(\d+)\s+(\S+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(.+)$/)
         if (!match) continue
 
         processes.push({
             pid: Number(match[1]),
             ppid: Number(match[2]),
             state: match[3]!.charAt(0),
-            processName: basename(match[4]!.trim()),
+            processName: basename(match[7]!.trim()),
+            utime: parsePsTime(match[5]!),
+            stime: parsePsTime(match[6]!),
+            rss: Math.round(Number(match[4]) / 4), // KB -> 4KB pages, like /proc
         })
     }
 

@@ -1,9 +1,14 @@
 import { readFile } from "node:fs/promises";
 import type { MemoryInfo } from "./memory.types.js";
+import { getMemoryInfoDarwin } from "./darwin/memory.darwin.js";
 
 
 export class MemoryService {
     async getMemoryInfo () : Promise<MemoryInfo> {
+        if (process.platform === "darwin") {
+            return getMemoryInfoDarwin()
+        }
+
         const content = await readFile(
             "/proc/meminfo",
             "utf-8"

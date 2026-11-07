@@ -1,11 +1,16 @@
 import { readFile } from "node:fs/promises";
 import type { CpuSnapshot, ProcessCpuSnapshot } from "./cpu.types.js";
 import type { ProcessInfo } from "../process/types.js";
+import { getCpuSnapshotDarwin } from "./darwin/cpu.darwin.js";
 
 
 export class CpuService {
 
     async getCpuSnapshot() : Promise<CpuSnapshot> {
+        if (process.platform === "darwin") {
+            return getCpuSnapshotDarwin()
+        }
+
         const content = await readFile("/proc/stat", "utf-8")
 
         const cpuLine = content 
@@ -50,7 +55,7 @@ export class CpuService {
             return 0
         }
 
-        const usage = ((totalDifference - idleDifference) / idleDifference) * 100
+        const usage = ((totalDifference - idleDifference) / totalDifference) * 100
 
         return usage
     }
