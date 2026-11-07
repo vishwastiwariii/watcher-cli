@@ -2,6 +2,7 @@
 
 import chalk from "chalk";
 import { Command } from "commander";
+import { listCommand } from "./cli/commands/list.js";
 
 const program = new Command()
 
@@ -19,4 +20,6 @@ program
         console.log(chalk.red("Process monitoring starts here. \n"))
     })
 
-program.parse()
+program.addCommand(listCommand)
+
+program.parseAsync(process.argv);
