@@ -11,7 +11,7 @@ const allowedSignals: ProcessSignal[] = [
   "SIGHUP"
 ];
 
-export const killCommand = new Command()
+export const killCommand = new Command("kill")
     .description("Send a signal to process")
     .argument("<pid>", "Process Id")
     .option(
@@ -26,14 +26,16 @@ export const killCommand = new Command()
 
         if(!Number.isSafeInteger(pid) || pid <= 1){
             console.error(chalk.red("Invalid or protected PID"))
+            process.exitCode = 1
             return
         }
 
         if(!allowedSignals.includes(signal)) {
             console.error(
-                chalk.red("Unsupported Signal")
+                chalk.red(`Unsupported signal. Allowed: ${allowedSignals.join(", ")}`)
             )
 
+            process.exitCode = 1
             return
         }
 
@@ -44,7 +46,7 @@ export const killCommand = new Command()
 
             console.log(
                 chalk.green(
-                    `Successfully sent signal ${signal} to process ${process}`
+                    `Successfully sent signal ${signal} to process ${pid}`
                 )
             )
         } catch (error) {
@@ -53,5 +55,7 @@ export const killCommand = new Command()
                     `Couldn't send the signal`
                 ), error
             )
+
+            process.exitCode = 1
         }
     })

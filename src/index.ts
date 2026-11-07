@@ -6,12 +6,13 @@ import { listCommand } from "./cli/commands/list.js";
 import { statCommand } from "./cli/commands/stats.js";
 import { monitorCommand } from "./cli/commands/monitor.js";
 import { inspectCommand } from "./cli/commands/inspect.js";
+import { killCommand } from "./cli/commands/kill.js";
 
 const program = new Command()
 
 program 
     .name("Watcher")
-    .description("A linux process monitoring CLI")
+    .description("A process monitoring CLI for Linux and macOS")
     .version("1.0.0")
 
 
@@ -30,5 +31,7 @@ program.addCommand(statCommand)
 program.addCommand(monitorCommand)
 
 program.addCommand(inspectCommand)
+
+program.addCommand(killCommand)
 
 program.parseAsync(process.argv);

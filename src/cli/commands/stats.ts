@@ -41,5 +41,6 @@ export const statCommand = new Command("stats")
                 console.log(chalk.cyan("===================\n"))
             } catch (error) {
                 console.error(chalk.red("Unable to retrieve system statistics"), error)
+                process.exitCode = 1
             }
         })

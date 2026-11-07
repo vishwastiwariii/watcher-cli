@@ -29,11 +29,13 @@ export const monitorCommand = new Command("monitor")
 
         if (!Number.isFinite(interval) || interval < 0.5) {
             console.error("Interval must be at least 0.5 seconds");
+            process.exitCode = 1;
             return;
         }
 
         if (!["cpu", "memory"].includes(sortBy)) {
             console.error("Sort must be cpu or memory");
+            process.exitCode = 1;
             return;
         }
 

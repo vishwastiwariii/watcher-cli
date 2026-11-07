@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { Command } from "commander";
 import { ProcessService } from "../../process/process.service.js";
-import { getPageSize } from "../../utils/system-info.js";
+import { getPageSize, getProcessStartDate } from "../../utils/system-info.js";
 import { formatMemory } from "../../utils/format.js";
 
 function getProcessState(state: string) : string {
@@ -28,6 +28,7 @@ export const inspectCommand = new Command("inspect")
 
             if(!Number.isSafeInteger(pid) || pid <= 0) {
                 console.error(chalk.red("Invalid PID"))
+                process.exitCode = 1
                 return
             }
 
@@ -38,12 +39,14 @@ export const inspectCommand = new Command("inspect")
 
                 if(!proc) {
                     console.log(chalk.red(`PID: ${pid} doesn't exists`))
+                    process.exitCode = 1
                     return
                 }
 
                 const pageSize = await getPageSize()
 
                 const memoryBytes = proc.rss * pageSize
+                const startDate = await getProcessStartDate(proc.startTimeTicks)
 
                 console.log(chalk.bold.cyan("\n========== PROCESS DETAILS ==========\n"))
 
@@ -55,10 +58,11 @@ export const inspectCommand = new Command("inspect")
                 console.log(`CPU USER TIME   : ${proc.utime} ticks`)
                 console.log(`CPU SYSTEM TIME : ${proc.stime} ticks`)
                 console.log(`MEMORY (RSS)    : ${formatMemory(memoryBytes)}`)
-                console.log(`START TIME      : ${proc.startTimeTicks} ticks`)
+                console.log(`START TIME      : ${startDate.toLocaleString()}`)
 
                 console.log(chalk.cyan("\n=====================================\n"))
             } catch (error) {
                 console.error(chalk.red("Unable to inspect process"), error)
+                process.exitCode = 1
             }
         })

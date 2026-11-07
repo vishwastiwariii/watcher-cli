@@ -16,7 +16,7 @@ export class ProcessManager {
         pid: number,
         signal: ProcessSignal
     ) : Promise<void> {
-        if(Number.isSafeInteger(pid) || pid <= 1) {
+        if(!Number.isSafeInteger(pid) || pid <= 1) {
             throw new Error("Invalid or protected PID")
         }
 

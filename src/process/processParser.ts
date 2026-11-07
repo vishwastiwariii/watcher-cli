@@ -32,7 +32,7 @@ export function parseProcessStat (
 
     const rss = Number(remainingFields[21])
 
-    const startTimeTicks = Number(remainingFields[22])
+    const startTimeTicks = Number(remainingFields[19])
 
     if(!Number.isInteger(ppid) || 
         !state || 
